@@ -7,7 +7,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/YOUR_USERNAME/k3s-gitops.git'
+    repoURL: 'https://github.com/BaptTF/vps-infra.git'
     targetRevision: HEAD
     path: apps
   destination:
