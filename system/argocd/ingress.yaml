@@ -5,6 +5,7 @@ metadata:
   name: argocd-server-ingress
   namespace: argocd
 spec:
+  ingressClassName: traefik
   rules:
   - host: argocd.192.168.122.133.nip.io
     http:
