@@ -4,8 +4,8 @@
 # Namespace
 namespace: tailscale
 
-# Reference the SealedSecret (will be decrypted to a regular Secret)
-# This secret is created from 01-tailscale-secret.yaml
+# Reference the Secret that will be synced from Infisical
+# This is created by 01-tailscale-infisical-secret.yaml
 secret: tailscale-credentials
 
 # Enable the Kubernetes operator
@@ -16,7 +16,5 @@ operator:
 # Tailscale features
 tailscale:
   features:
-    # Enable routing
     routing: true
-    # Enable exit node (optional)
     exitNode: false

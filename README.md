@@ -38,25 +38,14 @@ brew install kubeseal
 # Download from https://github.com/bitnami-labs/sealed-secrets/releases
 ```
 
-### Step 4: Generate SealedSecrets
+### Step 4: Generate SealedSecret for Infisical DB
 
-#### Infisical DB credentials:
 ```bash
 kubectl create secret generic infisical-db-credentials \
   -n infisical \
   --from-literal=username=infisical \
   --from-literal=password='YOUR_PASSWORD' \
   -o yaml | kubeseal --format yaml > workloads/infisical/03-db-credentials.yaml
-```
-
-#### Tailscale credentials (optional):
-```bash
-# Create OAuth client in https://login.tailscale.com/admin/settings/oauth
-kubectl create secret generic tailscale-credentials \
-  -n tailscale \
-  --from-literal=client-id='YOUR_CLIENT_ID' \
-  --from-literal=client-secret='YOUR_CLIENT_SECRET' \
-  -o yaml | kubeseal --format yaml > workloads/tailscale/01-tailscale-secret.yaml
 ```
 
 ### Step 5: Commit and push
@@ -78,6 +67,7 @@ Wait for ArgoCD to sync (this will deploy Infisical).
 | Project | Path | Keys |
 |---------|------|------|
 | infrastructure | `/cloudflare` | `api-token` |
+| infrastructure | `/tailscale` | `client-id`, `client-secret` |
 | monitoring | `/grafana` | `admin-password` |
 | couchdb | `/couchdb` | `COUCHDB_USER`, `COUCHDB_PASSWORD` |
 
