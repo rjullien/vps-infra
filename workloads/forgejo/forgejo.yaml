@@ -93,7 +93,7 @@ spec:
   - name: ssh
     port: 22
     targetPort: 22
-    nodePort: 2222
+    nodePort: 30022
   selector:
     app: forgejo
 ---
