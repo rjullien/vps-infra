@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tailscale
+  namespace: argocd
+spec:
+  project: system
+  source:
+    repoURL: https://pkgs.tailscale.com/helm
+    chart: tailscale
+    targetRevision: 1.0.0
+    helm:
+      releaseName: tailscale
+      valuesFile: values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tailscale
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

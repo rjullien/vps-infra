@@ -7,6 +7,7 @@ GitOps infrastructure on k3s with ArgoCD.
 - Fresh VPS with Ubuntu/Debian
 - Domain pointing to your VPS
 - Cloudflare account for DNS
+- Tailscale account (for VPN access)
 
 ---
 
@@ -37,14 +38,25 @@ brew install kubeseal
 # Download from https://github.com/bitnami-labs/sealed-secrets/releases
 ```
 
-### Step 4: Generate SealedSecret for Infisical DB
+### Step 4: Generate SealedSecrets
 
+#### Infisical DB credentials:
 ```bash
 kubectl create secret generic infisical-db-credentials \
   -n infisical \
   --from-literal=username=infisical \
   --from-literal=password='YOUR_PASSWORD' \
   -o yaml | kubeseal --format yaml > workloads/infisical/03-db-credentials.yaml
+```
+
+#### Tailscale credentials (optional):
+```bash
+# Create OAuth client in https://login.tailscale.com/admin/settings/oauth
+kubectl create secret generic tailscale-credentials \
+  -n tailscale \
+  --from-literal=client-id='YOUR_CLIENT_ID' \
+  --from-literal=client-secret='YOUR_CLIENT_SECRET' \
+  -o yaml | kubeseal --format yaml > workloads/tailscale/01-tailscale-secret.yaml
 ```
 
 ### Step 5: Commit and push
@@ -104,6 +116,7 @@ git push
 | Vaultwarden | https://vault.bapttf.com |
 | Forgejo | https://git.bapttf.com |
 | CouchDB | https://obsidian-livesync.bapttf.com |
+| Tailscale | VPN (connect via Tailscale client) |
 
 ---
 

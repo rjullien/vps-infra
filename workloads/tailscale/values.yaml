@@ -1,0 +1,22 @@
+# Tailscale Helm values
+# https://tailscale.com/kb/1235/kubernetes-operator
+
+# Namespace
+namespace: tailscale
+
+# Reference the SealedSecret (will be decrypted to a regular Secret)
+# This secret is created from 01-tailscale-secret.yaml
+secret: tailscale-credentials
+
+# Enable the Kubernetes operator
+operator:
+  enabled: true
+  replicaCount: 1
+
+# Tailscale features
+tailscale:
+  features:
+    # Enable routing
+    routing: true
+    # Enable exit node (optional)
+    exitNode: false
