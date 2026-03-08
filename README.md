@@ -68,15 +68,21 @@ Wait for ArgoCD to sync (this will deploy Infisical).
 |---------|------|------|
 | infrastructure | `/cloudflare` | `api-token` |
 | infrastructure | `/tailscale` | `client-id`, `client-secret` |
+| infrastructure | `/garage` | `rpc-secret`, `admin-token`, `metrics-token` |
 | monitoring | `/grafana` | `admin-password` |
 | couchdb | `/couchdb` | `COUCHDB_USER`, `COUCHDB_PASSWORD` |
+| lacoope | `/backend` | `postgres-password`, `session-key`, `admin-email`, `admin-password-hash`, `garage-access-key`, `garage-secret-key` |
 
 ### Step 7: Update InfisicalSecret project IDs
 
 Edit these files and replace project IDs:
 - `workloads/infisical/02-cloudflare-infisical-secret.yaml`
+- `workloads/infisical/02-tailscale-infisical-secret.yaml`
 - `workloads/obsidian-livesync/couchdb.yaml`
 - `workloads/monitoring/01-grafana-infisical-secret.yaml`
+- `workloads/garage/01-garage-infisical-secret.yaml`
+- `workloads/lacoope/01-backend-infisical-secret.yaml`
+- `workloads/tailscale/01-tailscale-infisical-secret.yaml`
 
 ```bash
 git add .
@@ -90,6 +96,7 @@ git push
 ./scripts/migrate-vaultwarden.sh
 ./scripts/migrate-couchdb.sh
 ./scripts/migrate-forgejo.sh
+./scripts/migrate-garage.sh
 ./scripts/migrate-monitoring.sh
 ```
 
@@ -106,6 +113,10 @@ git push
 | Vaultwarden | https://vault.bapttf.com |
 | Forgejo | https://git.bapttf.com |
 | CouchDB | https://obsidian-livesync.bapttf.com |
+| Garage S3 | https://s3.garage.bapttf.com |
+| Garage UI | https://garage-ui.bapttf.com |
+| LaCoope | https://lacoope.bapttf.com |
+| LaCoope API | https://lacoope-api.bapttf.com |
 | Tailscale | VPN (connect via Tailscale client) |
 
 ---
