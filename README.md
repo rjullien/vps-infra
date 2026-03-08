@@ -173,7 +173,20 @@ tailscale status
 # Example: curl http://<internal-ip>:8080
 ```
 
-The Tailscale operator is automatically configured via GitOps. Namespaces with `tailscale.com/operator: "true"` label will have services exposed automatically.
+### 4. Expose Services via Tailscale (optional)
+
+To expose a Kubernetes service via Tailscale, add this annotation to the service:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: myservice
+  annotations:
+    tailscale.com/expose: "true"
+```
+
+This can be added directly to your service definitions in Git.
 
 ## Note
 
