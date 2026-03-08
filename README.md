@@ -134,6 +134,62 @@ git push
 
 ---
 
+## Tailscale VPN Setup
+
+### 1. Configure Tailscale in Infisical
+
+After Infisical is deployed, add your Tailscale OAuth credentials:
+
+- **Project**: `infrastructure`
+- **Path**: `/tailscale`
+- **Keys**:
+  - `client-id`: Your Tailscale OAuth client ID
+  - `client-secret`: Your Tailscale OAuth client secret
+
+### 2. Create OAuth Client (first time only)
+
+1. Go to https://login.tailscale.com/admin/settings/oauth
+2. Click "Generate new OAuth client"
+3. Set permissions:
+   - `Read devices` (for device authorization)
+   - `Write ACLs` (optional, for ACL management)
+   - `Write DNS` (optional, for DNS management)
+4. Copy the Client ID and Client Secret
+5. Add them to Infisical
+
+### 3. Connect to VPN
+
+```bash
+# Install Tailscale client on your machine
+brew install tailscale  # macOS
+# or: curl -fsSL https://tailscale.com/install.sh | sh  # Linux
+
+# Connect to your VPN
+tailscale up --accept-routes
+
+# Check connection status
+tailscale status
+
+# Access services via private IP
+# Example: curl http://<internal-ip>:8080
+```
+
+### 4. Enable Kubernetes Operator (optional)
+
+Tailscale can expose Kubernetes services. After deployment:
+
+```bash
+# Enable Tailscale operator
+kubectl label namespace default tailscale.com/operator=1
+
+# Expose a service to Tailscale
+kubectl annotate service myservice tailscale.com/expose=true
+```
+
+This will create a Tailscale subnet router for accessing your k8s services.
+
+---
+
 ## Note
 
 HTTPS certificates via Let's Encrypt will work after:
