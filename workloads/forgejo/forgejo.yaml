@@ -82,6 +82,21 @@ spec:
         hostPath:
           path: /etc/localtime
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: forgejo-ssh
+  namespace: default
+spec:
+  type: NodePort
+  ports:
+  - name: ssh
+    port: 22
+    targetPort: 22
+    nodePort: 2222
+  selector:
+    app: forgejo
+---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
