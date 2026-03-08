@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lacoope-frontend
+  namespace: default
+spec:
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+  selector:
+    app: lacoope-frontend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lacoope-frontend
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lacoope-frontend
+  template:
+    metadata:
+      labels:
+        app: lacoope-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: git.bapttf.com/bapttf/lacoopefrontend:latest
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PUBLIC_API_BASE_URL
+          value: "https://lacoope-api.bapttf.com/v1"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 40
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: lacoope
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`lacoope.bapttf.com`)
+    kind: Rule
+    services:
+    - name: lacoope-frontend
+      port: 3000
+  tls: {}

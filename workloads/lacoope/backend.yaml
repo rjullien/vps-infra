@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lacoope-backend
+  namespace: default
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: lacoope-backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lacoope-backend
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lacoope-backend
+  template:
+    metadata:
+      labels:
+        app: lacoope-backend
+    spec:
+      containers:
+      - name: backend
+        image: git.bapttf.com/bapttf/lacoopebackend:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: ECHO_ENV
+          value: "production"
+        - name: DB_HOST
+          value: "postgres"
+        - name: DB_PORT
+          value: "5432"
+        - name: POSTGRES_DB
+          value: "lacoope"
+        - name: SERVER_PORT
+          value: "8080"
+        - name: FRONTEND_URL
+          value: "https://lacoope.bapttf.com"
+        - name: GARAGE_ENDPOINT
+          value: "http://garage:3900"
+        - name: GARAGE_REGION
+          value: "garage"
+        envFrom:
+        - secretRef:
+            name: lacoope-backend-secrets
+        livenessProbe:
+          httpGet:
+            path: /v1/health
+            port: 8080
+          initialDelaySeconds: 40
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /v1/health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: lacoope-api
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`lacoope-api.bapttf.com`)
+    kind: Rule
+    services:
+    - name: lacoope-backend
+      port: 8080
+  tls: {}
