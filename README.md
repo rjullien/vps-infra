@@ -31,11 +31,10 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 ### Step 3: Install kubeseal (for SealedSecrets)
 
 ```bash
-# macOS
-brew install kubeseal
-
 # Linux
 # Download from https://github.com/bitnami-labs/sealed-secrets/releases
+# macOS
+# brew install kubeseal
 ```
 
 ### Step 4: Generate SealedSecret for Infisical DB
@@ -161,8 +160,8 @@ After Infisical is deployed, add your Tailscale OAuth credentials:
 
 ```bash
 # Install Tailscale client on your machine
-brew install tailscale  # macOS
-# or: curl -fsSL https://tailscale.com/install.sh | sh  # Linux
+curl -fsSL https://tailscale.com/install.sh | sh  # Linux
+# or: brew install tailscale  # macOS
 
 # Connect to your VPN
 tailscale up --accept-routes
@@ -173,22 +172,6 @@ tailscale status
 # Access services via private IP
 # Example: curl http://<internal-ip>:8080
 ```
-
-### 4. Enable Kubernetes Operator (optional)
-
-Tailscale can expose Kubernetes services. After deployment:
-
-```bash
-# Enable Tailscale operator
-kubectl label namespace default tailscale.com/operator=1
-
-# Expose a service to Tailscale
-kubectl annotate service myservice tailscale.com/expose=true
-```
-
-This will create a Tailscale subnet router for accessing your k8s services.
-
----
 
 ## Note
 
