@@ -37,18 +37,8 @@ brew install kubeseal
 # Download from https://github.com/bitnami-labs/sealed-secrets/releases
 ```
 
-### Step 4: Generate SealedSecrets
+### Step 4: Generate SealedSecret for Infisical DB
 
-#### Cloudflare credentials:
-```bash
-# Create API token in Cloudflare (Zone:DNS:Edit permissions)
-kubectl create secret generic cloudflare-credentials \
-  -n cert-manager \
-  --from-literal=api-token='YOUR_API_TOKEN' \
-  -o yaml | kubeseal --format yaml > workloads/infisical/02-cloudflare-secret.yaml
-```
-
-#### Infisical DB credentials:
 ```bash
 kubectl create secret generic infisical-db-credentials \
   -n infisical \
@@ -65,23 +55,24 @@ git commit -m "feat: add sealed secrets"
 git push
 ```
 
+Wait for ArgoCD to sync (this will deploy Infisical).
+
 ### Step 6: Configure Infisical
 
-1. Access `https://infisical.bapttf.com`
+1. Access `https://infisical.bapttf.com` (use self-signed cert warning)
 2. Create admin account
-3. Create project `monitoring`
-4. Create project `couchdb`
-
-Add secrets:
+3. Create projects and add secrets:
 
 | Project | Path | Keys |
 |---------|------|------|
+| infrastructure | `/cloudflare` | `api-token` |
 | monitoring | `/grafana` | `admin-password` |
 | couchdb | `/couchdb` | `COUCHDB_USER`, `COUCHDB_PASSWORD` |
 
 ### Step 7: Update InfisicalSecret project IDs
 
-Edit these files and replace `REPLACE_WITH_PROJECT_ID`:
+Edit these files and replace project IDs:
+- `workloads/infisical/02-cloudflare-infisical-secret.yaml`
 - `workloads/obsidian-livesync/couchdb.yaml`
 - `workloads/monitoring/01-grafana-infisical-secret.yaml`
 
@@ -113,3 +104,12 @@ git push
 | Vaultwarden | https://vault.bapttf.com |
 | Forgejo | https://git.bapttf.com |
 | CouchDB | https://obsidian-livesync.bapttf.com |
+
+---
+
+## Note
+
+HTTPS certificates via Let's Encrypt will work after:
+- Infisical is deployed
+- Cloudflare API token is added to Infisical
+- ArgoCD syncs the InfisicalSecret
