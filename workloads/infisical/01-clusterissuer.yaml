@@ -1,6 +1,6 @@
-# Install via Helm after applying cert-manager CRDs
-# Run: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.crds.yaml
-# Then: helm install cert-manager jetstack/cert-manager -n cert-manager --create-namespace --version v1.15.0
+# Cloudflare DNS-01 Challenge ClusterIssuer
+# Uses SealedSecret for credentials (secret zero problem)
+# After deploying SealedSecret, cert-manager will be able to issue certificates
 
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -13,6 +13,9 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
-    - http01:
-        ingress:
-          class: traefik
+    - dns01:
+        cloudflare:
+          email: admin@bapttf.com
+          apiTokenSecretRef:
+            name: cloudflare-credentials
+            key: api-token
