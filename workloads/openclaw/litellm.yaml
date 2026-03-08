@@ -32,6 +32,9 @@ spec:
         ports:
         - containerPort: 4000
           name: http
+        envFrom:
+        - secretRef:
+            name: litellm-secrets
         command:
         - --config
         - /app/config.yaml
@@ -39,6 +42,10 @@ spec:
         - "4000"
         - --num_workers
         - "1"
+        - --env_var
+        - AWS_ACCESS_KEY_ID
+        - --env_var
+        - AWS_SECRET_ACCESS_KEY
         volumeMounts:
         - name: config
           mountPath: /app/config.yaml

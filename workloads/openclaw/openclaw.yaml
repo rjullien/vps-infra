@@ -110,10 +110,37 @@ metadata:
   namespace: default
 data:
   config.yaml: |
-    # Placeholder - replace with actual litellm config
-    model_list: []
+    model_list:
+      - model_name: claude-sonnet
+        litellm_params:
+          model: bedrock/us.anthropic.claude-sonnet-4-20250514-v1:0
+          aws_region_name: us-west-2
+
+      - model_name: claude-sonnet-46
+        litellm_params:
+          model: bedrock/us.anthropic.claude-sonnet-4-6
+          aws_region_name: us-west-2
+
+      - model_name: claude-opus
+        litellm_params:
+          model: bedrock/us.anthropic.claude-opus-4-5-20251101-v1:0
+          aws_region_name: us-west-2
+
+      - model_name: claude-opus-46
+        litellm_params:
+          model: bedrock/us.anthropic.claude-opus-4-6-v1
+          aws_region_name: us-west-2
+
+      - model_name: claude-haiku
+        litellm_params:
+          model: bedrock/us.anthropic.claude-3-5-haiku-20241022-v1:0
+          aws_region_name: us-west-2
+
     litellm_settings:
       drop_params: true
+
+    general_settings:
+      master_key: sk-leo-litellm-key
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
