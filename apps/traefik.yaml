@@ -6,9 +6,13 @@ metadata:
 spec:
   project: system
   source:
-    repoURL: https://github.com/BaptTF/vps-infra.git
-    targetRevision: HEAD
-    path: workloads/traefik
+    repoURL: https://traefik.github.io/charts
+    chart: traefik
+    targetRevision: 30.0.0
+    helm:
+      releaseName: traefik
+      valueFiles:
+        - https://raw.githubusercontent.com/BaptTF/vps-infra/main/workloads/traefik/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik
@@ -16,3 +20,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
