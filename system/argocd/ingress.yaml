@@ -6,7 +6,7 @@ metadata:
   namespace: argocd
 spec:
   entryPoints:
-    - websecure
+    - web
   routes:
   - match: Host(`argocd.192.168.122.133.nip.io`)
     kind: Rule
