@@ -3,7 +3,7 @@
 # - host: your Infisical URL
 # - projectId: from Infisical dashboard
 # - secretPath: path where secrets are stored in Infisical
-apiVersion: external.infisical.com/v1alpha1
+apiVersion: secrets.infisical.com/v1alpha1
 kind: InfisicalSecret
 metadata:
   name: couchdb-secrets
