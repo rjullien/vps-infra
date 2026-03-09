@@ -19,7 +19,23 @@ GitOps infrastructure on k3s with ArgoCD.
 curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable=traefik" sh
 ```
 
-### Step 2: Deploy ArgoCD
+### Step 2: Configure kubectl access
+
+```bash
+# Copy kubeconfig to your home directory
+mkdir -p ~/.kube
+cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+chown $USER:$USER ~/.kube/config
+```
+
+### Step 3: Deploy ArgoCD
+
+```bash
+kubectl create namespace argocd
+kubectl apply -n argocd --server-side --force-conflicts -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+### Step 4: Deploy the GitOps apps
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/BaptTF/vps-infra/refs/heads/main/root-app.yaml
@@ -28,7 +44,7 @@ kubectl apply -f https://raw.githubusercontent.com/BaptTF/vps-infra/refs/heads/m
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
 
-### Step 3: Install kubeseal (for SealedSecrets)
+### Step 5: Install kubeseal (for SealedSecrets)
 
 ```bash
 # Linux
@@ -37,7 +53,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 # brew install kubeseal
 ```
 
-### Step 4: Generate SealedSecret for Infisical DB
+### Step 6: Generate SealedSecret for Infisical DB
 
 ```bash
 kubectl create secret generic infisical-db-credentials \
@@ -47,7 +63,7 @@ kubectl create secret generic infisical-db-credentials \
   -o yaml | kubeseal --format yaml > workloads/infisical/03-db-credentials.yaml
 ```
 
-### Step 5: Commit and push
+### Step 7: Commit and push
 
 ```bash
 git add .
@@ -57,7 +73,7 @@ git push
 
 Wait for ArgoCD to sync (this will deploy Infisical).
 
-### Step 6: Configure Infisical
+### Step 8: Configure Infisical
 
 1. Access `https://infisical.bapttf.com` (use self-signed cert warning)
 2. Create admin account
@@ -76,7 +92,7 @@ Wait for ArgoCD to sync (this will deploy Infisical).
 | openclaw | `/app` | (env vars for openclaw) |
 | openclaw | `/litellm` | `aws-access-key-id`, `aws-secret-access-key`, `master-key` |
 
-### Step 7: Update InfisicalSecret project IDs
+### Step 9: Update InfisicalSecret project IDs
 
 Edit these files and replace project IDs:
 - `workloads/infisical/02-cloudflare-infisical-secret.yaml`
@@ -96,7 +112,7 @@ git commit -m "feat: configure Infisical project IDs"
 git push
 ```
 
-### Step 8: Migrate data
+### Step 10: Migrate data
 
 ```bash
 ./scripts/migrate-vaultwarden.sh
