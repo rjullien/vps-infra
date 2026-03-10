@@ -76,10 +76,10 @@ stringData:
   
   # Redis URL
   # Format: redis://:password@hostname:port or redis://hostname:port (no auth)
-  # REDIS_URL: "redis://infisical-redis.infisical.svc.cluster.local:6379"
+  REDIS_URL: "redis://infisical-redis.infisical.svc.cluster.local:6379"
   
   # Your site URL
-  SITE_URL: "https://infisical.bapttf.com"
+  SITE_URL: "https://infisical.192.168.122.133.nip.io"
 ```
 
 ```bash
