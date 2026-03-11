@@ -12,31 +12,16 @@ spec:
     targetRevision: '*' 
     helm:
       values: |
-        # Disable the chart's built-in dependencies since you are providing your own
-        postgresql:
-          enabled: false
-        redis:
-          enabled: false
-        
         # Disable the chart's built-in Ingress since you provided a Traefik IngressRoute
         ingress:
           enabled: false
-          
-        # (Optional) Pin the application image version. 
-        # By default, the chart might use an older or latest tag.
-        # infisical:
-        #   image:
-        #     tag: "v0.151.0"
-        # On passe à 1 seul pod au lieu de 3
-        replicaCount: 1 
         
-        # On réduit la quantité de RAM réservée par le pod
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi # Au lieu de 1000Mi
-          limits:
-            memory: 512Mi
+        infisical:
+          image:
+            repository: infisical/infisical
+            tag: "v0.151.0"  # Check https://hub.docker.com/r/infisical/infisical/tags for latest
+            pullPolicy: IfNotPresent
+          replicaCount: 1
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: infisical
