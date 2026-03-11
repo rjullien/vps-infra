@@ -61,8 +61,8 @@ infisical:
 
   resources:
     limits:
-      cpu: "500m"
-      memory: "512Mi"
+      cpu: "350m"
+      memory: "1000Mi"
     requests:
       cpu: "50m"
       memory: "256Mi"
