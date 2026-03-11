@@ -41,7 +41,7 @@ infisical:
 
   image:
     repository: infisical/infisical
-    tag: "v0.151.0"
+    tag: "v0.158.0"
     pullPolicy: IfNotPresent
     imagePullSecrets: []
 
