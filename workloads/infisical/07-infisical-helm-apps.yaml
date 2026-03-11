@@ -12,7 +12,7 @@ spec:
     targetRevision: '*' 
     helm:
       valueFiles:
-        - '$values/workloads/infisical/values.yaml'
+        - '$values/workloads/infisical/07-infisical-helm-apps-values.yaml'
   - repoURL: 'https://github.com/BaptTF/vps-infra.git' 
     targetRevision: HEAD
     # The 'ref' creates the '$values' variable used in the first source
