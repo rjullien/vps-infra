@@ -33,7 +33,7 @@ spec:
         - containerPort: 80
         env:
         - name: DOMAIN
-          value: "https://vault.bapttf.com"
+          value: "https://vault.192.168.122.133.nip.io"
         volumeMounts:
         - name: data
           mountPath: /data
