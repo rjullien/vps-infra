@@ -55,66 +55,25 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 
 ### Step 6: Generate SealedSecret for Infisical
 
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: infisical-db-credentials
-  namespace: infisical
-type: Opaque
-stringData:
-  # Remplace par ton vrai nom d'utilisateur s'il est différent
-  username: "infisical"
-  
-  # Remplace par ton vrai mot de passe
-  password: "CHANGE_DB_PASSWORD"
-```
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: infisical-secrets
-  namespace: infisical
-type: Opaque
-stringData:
-  # Generate with: openssl rand -base64 32
-  AUTH_SECRET: "CHANGE_ME_generate_with_openssl_rand_base64_32"
-  
-  # Generate with: openssl rand -hex 16
-  ENCRYPTION_KEY: "CHANGE_ME_generate_with_openssl_rand_hex_16"
-  
-  # PostgreSQL connection string
-  # Format: postgresql://username:password@hostname:port/database
-  # For cloudnative-pg: postgresql://infisical:YOUR_DB_PASSWORD@infisical-db-rw.infisical.svc.cluster.local:5432/infisical
-  DB_CONNECTION_URI: "postgresql://infisical:CHANGE_DB_PASSWORD@infisical-db-rw.infisical.svc.cluster.local:5432/infisical"
-  
-  # Redis URL
-  # Format: redis://:password@hostname:port or redis://hostname:port (no auth)
-  REDIS_URL: "redis://infisical-redis.infisical.svc.cluster.local:6379"
-  
-  # Your site URL
-  SITE_URL: "https://infisical.192.168.122.133.nip.io"
-```
-
 ```bash
-kubeseal --controller-namespace kube-system --controller-name sealed-secrets --fetch-cert > pub-cert.pem
-```
-```bash
-kubeseal --format yaml --cert pub-cert.pem < workloads/infisical/06-infisical-secrets.yaml > workloads/infisical/06-infisical-secrets-sealed.yaml
-```
-
-```bash
-kubeseal --format yaml --cert pub-cert.pem < workloads/infisical/03-db.yaml > workloads/infisical/03-db-credentials.yaml
-```
-
-<!--```bash
+DB_PASSWORD=$(openssl rand -hex 16)
 kubectl create secret generic infisical-db-credentials \
-  -n infisical \
-  --from-literal=username=infisical \
-  --from-literal=password='YOUR_PASSWORD' \
-  -o yaml | kubeseal --format yaml > workloads/infisical/03-db-credentials.yaml
-```-->
+  --namespace infisical \
+  --from-literal=username="infisical" \
+  --from-literal=password="$DB_PASSWORD" \
+  --dry-run=client -o yaml | kubeseal --format yaml --cert pub-cert.pem > workloads/infisical/03-db-credentials.yaml && \
+kubectl create secret generic infisical-secrets \
+  --namespace infisical \
+  --from-literal=AUTH_SECRET="$(openssl rand -base64 32)" \
+  --from-literal=ENCRYPTION_KEY="$(openssl rand -hex 16)" \
+  --from-literal=DB_CONNECTION_URI="postgresql://infisical:${DB_PASSWORD}@infisical-db-rw.infisical.svc.cluster.local:5432/infisical" \
+  --from-literal=REDIS_URL="redis://infisical-redis.infisical.svc.cluster.local:6379" \
+  --from-literal=SITE_URL="https://infisical.192.168.122.133.nip.io" \
+  --dry-run=client -o yaml | kubeseal --format yaml --cert pub-cert.pem > workloads/infisical/06-infisical-secrets-sealed.yaml && \
+git add workloads/infisical/03-db-credentials.yaml workloads/infisical/06-infisical-secrets-sealed.yaml && \
+git commit -m "chore: generate and seal new database credentials and infisical secrets" && \
+git push
+```
 
 ### Step 7: Commit and push
 
