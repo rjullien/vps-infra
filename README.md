@@ -59,6 +59,21 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 apiVersion: v1
 kind: Secret
 metadata:
+  name: infisical-db-credentials
+  namespace: infisical
+type: Opaque
+stringData:
+  # Remplace par ton vrai nom d'utilisateur s'il est différent
+  username: "infisical"
+  
+  # Remplace par ton vrai mot de passe
+  password: "CHANGE_DB_PASSWORD"
+```
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
   name: infisical-secrets
   namespace: infisical
 type: Opaque
@@ -72,7 +87,7 @@ stringData:
   # PostgreSQL connection string
   # Format: postgresql://username:password@hostname:port/database
   # For cloudnative-pg: postgresql://infisical:YOUR_DB_PASSWORD@infisical-db-rw.infisical.svc.cluster.local:5432/infisical
-  # DB_CONNECTION_URI: "postgresql://infisical:CHANGE_DB_PASSWORD@infisical-db-rw.infisical.svc.cluster.local:5432/infisical"
+  DB_CONNECTION_URI: "postgresql://infisical:CHANGE_DB_PASSWORD@infisical-db-rw.infisical.svc.cluster.local:5432/infisical"
   
   # Redis URL
   # Format: redis://:password@hostname:port or redis://hostname:port (no auth)
@@ -87,6 +102,10 @@ kubeseal --controller-namespace kube-system --controller-name sealed-secrets --f
 ```
 ```bash
 kubeseal --format yaml --cert pub-cert.pem < workloads/infisical/06-infisical-secrets.yaml > workloads/infisical/06-infisical-secrets-sealed.yaml
+```
+
+```bash
+kubeseal --format yaml --cert pub-cert.pem < workloads/infisical/03-db.yaml > workloads/infisical/03-db-credentials.yaml
 ```
 
 <!--```bash
