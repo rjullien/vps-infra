@@ -5,30 +5,19 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: 'https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/'
+  sources:
+  - repoURL: 'https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/'
     chart: infisical-standalone
     # It is highly recommended to pin this to a specific chart version in production
     targetRevision: '*' 
     helm:
-      values: |
-        # Disable the chart's built-in Ingress since you provided a Traefik IngressRoute
-        ingress:
-          enabled: false
-        
-        infisical:
-          replicaCount: 1
-          image:
-            repository: infisical/infisical
-            tag: "v0.151.0"
-            pullPolicy: IfNotPresent
-          resources:
-            requests:
-              cpu: "50m"
-              memory: "256Mi"
-            limits:
-              cpu: "500m"
-              memory: "512Mi"
+      valueFiles:
+        - '$values/workloads/infisical/values.yaml'
+  - repoURL: 'https://github.com/BaptTF/vps-infra.git' 
+    targetRevision: HEAD
+    # The 'ref' creates the '$values' variable used in the first source
+    ref: values
+    
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: infisical
