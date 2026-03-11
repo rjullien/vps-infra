@@ -67,12 +67,12 @@ infisical:
       cpu: "50m"
       memory: "256Mi"
 
-ingress:
-  enabled: true
-  hostName: "infisical.192.168.122.133.nip.io"  # Replace with your domain
-  ingressClassName: nginx
-  nginx:
-    enabled: true
+# ingress:
+#   enabled: true
+#   hostName: "infisical.192.168.122.133.nip.io"  # Replace with your domain
+#   ingressClassName: nginx
+#   nginx:
+#     enabled: true
 
 postgresql:
   enabled: false
