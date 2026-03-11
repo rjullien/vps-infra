@@ -64,7 +64,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`vault.bapttf.com`)
+  - match: Host(`vault.192.168.122.133.nip.io`)
     kind: Rule
     services:
     - name: vaultwarden
