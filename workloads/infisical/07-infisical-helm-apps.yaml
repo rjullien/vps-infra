@@ -27,6 +27,16 @@ spec:
         # infisical:
         #   image:
         #     tag: "v0.151.0"
+        # On passe à 1 seul pod au lieu de 3
+        replicaCount: 1 
+        
+        # On réduit la quantité de RAM réservée par le pod
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi # Au lieu de 1000Mi
+          limits:
+            memory: 512Mi
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: infisical
