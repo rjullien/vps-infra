@@ -9,12 +9,20 @@ metadata:
   name: couchdb-secrets
   namespace: default
 spec:
-  host: https://infisical.bapttf.com
-  projectId: REPLACE_WITH_PROJECT_ID
-  env: production
-  secretPath: /couchdb
-  # Optional: reload deployment when secrets change
-  secretReloadPolicy: Always
+  hostAPI: https://infisical.bapttf.com/api
+  authentication:
+    universalAuth:
+      secretsScope:
+        projectId: REPLACE_WITH_PROJECT_ID
+        envSlug: production
+        secretsPath: /couchdb
+      credentialsRef:
+        secretName: infisical-universal-auth
+        secretNamespace: infisical
+  managedKubeSecretReferences:
+    - secretName: couchdb-secrets
+      secretNamespace: default
+      creationPolicy: Owner
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
