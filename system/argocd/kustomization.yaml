@@ -9,3 +9,4 @@ resources:
 
 patches:
   - path: insecure-patch.yaml
+  - path: enable-helm-kustomize.yaml
