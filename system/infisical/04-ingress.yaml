@@ -12,7 +12,7 @@ spec:
   - match: Host(`infisical.192.168.122.133.nip.io`)
     kind: Rule
     services:
-    - name: infisical-app-infisical-standalone-infisical
+    - name: infisical-infisical-standalone-infisical
       port: 8080
   # tls:
   #   certResolver: letsencrypt-prod
