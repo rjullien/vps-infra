@@ -70,16 +70,14 @@ kubectl create secret generic infisical-secrets \
   --from-literal=REDIS_URL="redis://infisical-redis.infisical.svc.cluster.local:6379" \
   --from-literal=SITE_URL="https://infisical.192.168.122.133.nip.io" \
   --dry-run=client -o yaml | kubeseal --format yaml --cert pub-cert.pem > workloads/infisical/06-infisical-secrets-sealed.yaml && \
-git add workloads/infisical/03-db-credentials.yaml workloads/infisical/06-infisical-secrets-sealed.yaml && \
-git commit -m "chore: generate and seal new database credentials and infisical secrets" && \
-git push
+
 ```
 
 ### Step 7: Commit and push
 
 ```bash
-git add .
-git commit -m "feat: add sealed secrets"
+git add workloads/infisical/03-db-credentials.yaml workloads/infisical/06-infisical-secrets-sealed.yaml && \
+git commit -m "chore: generate and seal new database credentials and infisical secrets" && \
 git push
 ```
 
@@ -104,16 +102,37 @@ Wait for ArgoCD to sync (this will deploy Infisical).
 | openclaw | `/app` | (env vars for openclaw) |
 | openclaw | `/litellm` | `aws-access-key-id`, `aws-secret-access-key`, `master-key` |
 
-### Step 9: Update InfisicalSecret project IDs
+### Step 9: Generate SealedSecret for Infisical Machine Identity
+
+For the InfisicalSecret CR to authenticate with Infisical, you need to create a machine identity and seal its credentials.
+
+1. Create a machine identity in Infisical UI:
+   - Go to your project → Machine Identities → Create new
+   - Copy the clientId and clientSecret
+
+2. Generate the SealedSecret (replace with your values)
+
+```bash
+CLIENT_ID="your-machine-identity-client-id" \
+CLIENT_SECRET="your-machine-identity-client-secret" \
+kubectl create secret generic infisical-universal-auth \
+  --namespace tailscale \
+  --from-literal=clientId="$CLIENT_ID" \
+  --from-literal=clientSecret="$CLIENT_SECRET" \
+  --dry-run=client -o yaml | kubeseal --format yaml --cert pub-cert.pem > system/tailscale/00-infisical-auth-secret.yaml && git add system/tailscale/00-infisical-auth-secret.yaml && \
+  git commit -m "chore: update"
+```
+
+### Step 10: Update InfisicalSecret project IDs
 
 Edit these files and replace project IDs:
-- `workloads/infisical/02-cloudflare-infisical-secret.yaml`
+- `system/cert-manager/02-cloudflare-secret.yaml`
 - `workloads/infisical/02-tailscale-infisical-secret.yaml`
 - `workloads/obsidian-livesync/couchdb.yaml`
 - `workloads/monitoring/01-grafana-infisical-secret.yaml`
 - `workloads/garage/01-garage-infisical-secret.yaml`
 - `workloads/lacoope/01-backend-infisical-secret.yaml`
-- `workloads/tailscale/01-tailscale-infisical-secret.yaml`
+- `system/tailscale/01-tailscale-infisical-secret.yaml`
 - `workloads/meilisearch/01-meilisearch-infisical-secret.yaml`
 - `workloads/jujudb/01-jujudb-infisical-secret.yaml`
 - `workloads/openclaw/01-openclaw-infisical-secret.yaml`
@@ -124,7 +143,7 @@ git commit -m "feat: configure Infisical project IDs"
 git push
 ```
 
-### Step 10: Migrate data
+### Step 11: Migrate data
 
 ```bash
 ./scripts/migrate-vaultwarden.sh

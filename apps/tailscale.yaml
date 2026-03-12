@@ -6,17 +6,17 @@ metadata:
 spec:
   project: system
   source:
-    repoURL: https://pkgs.tailscale.com/helm
-    chart: tailscale
-    targetRevision: 1.0.0
-    helm:
-      releaseName: tailscale
-      valueFiles:
-        - values.yaml
+    repoURL: 'https://github.com/BaptTF/vps-infra.git'
+    targetRevision: HEAD
+    path: system/tailscale
   destination:
-    server: https://kubernetes.default.svc
+    server: 'https://kubernetes.default.svc'
     namespace: tailscale
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncWave: 0
+  syncOptions:
+    - ServerSideApply=true
+    - CreateNamespace=true
