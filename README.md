@@ -115,8 +115,8 @@ For the InfisicalSecret CR to authenticate with Infisical, you need to create a 
 2. Generate the SealedSecret (replace with your values)
 
 ```bash
-CLIENT_ID="your-machine-identity-client-id" \
-CLIENT_SECRET="your-machine-identity-client-secret" \
+CLIENT_ID="your-machine-identity-client-id" &&\
+CLIENT_SECRET="your-machine-identity-client-secret" &&\
 kubectl create secret generic infisical-universal-auth \
   --namespace infisical \
   --from-literal=clientId="$CLIENT_ID" \
