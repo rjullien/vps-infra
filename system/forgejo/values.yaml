@@ -10,7 +10,7 @@ ingress:
 persistence:
   enabled: true
   storageClass: "local-path"
-  size: 1Gi
+  size: 10Gi
 
 # Disable bundled DBs
 postgresql:
