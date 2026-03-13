@@ -1,8 +1,14 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: postgres
+  name: postgres-cluster
 spec:
   instances: 1
   storage:
     size: 2Gi
+    managed:
+      roles:
+        - name: forgejo
+          login: true
+          passwordSecret:
+            name: forgejo-db-secret

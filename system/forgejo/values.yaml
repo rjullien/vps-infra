@@ -1,0 +1,46 @@
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: git.192.168.122.133.nip.io
+      paths:
+        - path: /
+          pathType: Prefix
+
+persistence:
+  enabled: true
+  storageClass: "local-path"
+  size: 10Gi
+
+# Disable bundled DBs
+postgresql:
+  enabled: false
+postgresql-ha:
+  enabled: false
+redis:
+  enabled: false
+
+extraEnvironmentVars:
+  - name: GITEA__database__PASSWD
+    valueFrom:
+      secretKeyRef:
+        name: forgejo-db-secret
+        key: password
+
+gitea:
+  admin:
+    existingSecret: forgejo-admin-secret
+    
+  config:
+    server:
+      DOMAIN: git.example.com
+      ROOT_URL: "https://git.192.168.122.133.nip.io/"
+      SSH_DOMAIN: git.example.com
+      SSH_PORT: 22
+      SSH_LISTEN_PORT: 22
+    database:
+      DB_TYPE: postgres
+      # Point across namespaces to the shared cluster's Read/Write service
+      HOST: shared-db-rw.database.svc.cluster.local:5432
+      NAME: forgejo
+      USER: forgejo
