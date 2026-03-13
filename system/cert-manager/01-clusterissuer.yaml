@@ -9,13 +9,11 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: admin@bapttf.com
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
     - dns01:
         cloudflare:
-          email: admin@bapttf.com
           apiTokenSecretRef:
             name: cloudflare-credentials
             key: api-token
