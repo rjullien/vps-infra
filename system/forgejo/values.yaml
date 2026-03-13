@@ -20,17 +20,13 @@ postgresql-ha:
 redis:
   enabled: false
 
-extraEnvironmentVars:
-  - name: GITEA__database__PASSWD
-    valueFrom:
-      secretKeyRef:
-        name: forgejo-db-secret
-        key: password
-
 gitea:
   admin:
     existingSecret: forgejo-admin-secret
     
+  additionalConfigSources:
+    - secret:
+        secretName: forgejo-db-secret
   config:
     server:
       DOMAIN: git.192.168.122.133.nip.io
@@ -38,9 +34,3 @@ gitea:
       SSH_DOMAIN: git.192.168.122.133.nip.io
       SSH_PORT: 22
       SSH_LISTEN_PORT: 22
-    database:
-      DB_TYPE: postgres
-      # Point across namespaces to the shared cluster's Read/Write service
-      HOST: postgres-cluster-rw.cnpg-system.svc.cluster.local:5432
-      NAME: forgejo
-      USER: forgejo
