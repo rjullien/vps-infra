@@ -7,15 +7,20 @@ metadata:
 data:
   rules.yaml: |
     version: "1"
-    rules:
+    pipes:
       # When user 'git' connects, forward to the Forgejo service
-      - username: "git"
-        upstream: "forgejo-ssh.forgejo.svc.cluster.local:22"
-        
+      - from:
+          - username: "git"
+        to:
+          host: "forgejo-ssh.forgejo.svc.cluster.local:22"
+          ignore_hostkey: true
+          
       # When user 'openclaw' connects, forward to the Openclaw service
-      # (Make sure to update 'default' to whatever namespace openclaw lives in)
-      - username: "openclaw"
-        upstream: "openclaw-service.default.svc.cluster.local:22"
+      - from:
+          - username: "openclaw"
+        to:
+          host: "openclaw-service.default.svc.cluster.local:22"
+          ignore_hostkey: true
 ---
 # 2. The SSHPiper Deployment
 apiVersion: apps/v1
