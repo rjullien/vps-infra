@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - forgejo-infisical-secret.yaml
-  - ingress-tcp.yaml
 
 helmCharts:
   - name: forgejo
