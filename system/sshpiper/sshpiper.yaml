@@ -39,16 +39,10 @@ spec:
           ports:
             - containerPort: 2222
               name: ssh
-          # env:
-          #   # Tell SSHPiper to use the YAML routing plugin
-          #   - name: SSHPIPERD_PLUGINS
-          #     value: "yaml"
-          #   - name: SSHPIPERD_YAML_CONFIG
-          #     value: "/etc/sshpiper/rules.yaml"
           args:
+            - "--log-level=trace"
             - /sshpiperd/plugins/yaml
             - "--config=/etc/sshpiper/rules.yaml"
-            - "--no-check-perm"
           volumeMounts:
             - name: config-volume
               mountPath: /etc/sshpiper
