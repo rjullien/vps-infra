@@ -32,7 +32,7 @@ chown $USER:$USER ~/.kube/config
 
 ```bash
 kubectl create namespace argocd
-kubectl apply -n argocd --server-side --force-conflicts -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply --server-side --force-conflicts -f argocd-bootstrap.yaml
 ```
 
 ### Step 4: Deploy the GitOps apps
