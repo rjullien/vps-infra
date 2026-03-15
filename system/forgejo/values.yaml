@@ -34,3 +34,5 @@ gitea:
       SSH_DOMAIN: git.192.168.122.133.nip.io
       SSH_PORT: 22
       SSH_LISTEN_PORT: 22
+    repository:
+      USE_COMPAT_SSH_URI: false
