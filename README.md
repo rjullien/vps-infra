@@ -31,7 +31,6 @@ chown $USER:$USER ~/.kube/config
 ### Step 3: Deploy ArgoCD
 
 ```bash
-kubectl create namespace argocd
 kubectl apply --server-side --force-conflicts -f argocd-bootstrap.yaml
 ```
 
