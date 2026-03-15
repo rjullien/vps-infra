@@ -31,6 +31,14 @@ tracing:
     http:
       enabled: false
 
+# Providers configuration
+# Instructs Traefik to publish its LoadBalancer IP to standard Ingress resources.
+# This ensures tools like ArgoCD can accurately read the Ingress health status.
+providers:
+  kubernetesIngress:
+    publishedService:
+      enabled: true
+
 # IngressClass configuration
 ingressClass:
   enabled: true
