@@ -1,0 +1,71 @@
+# 1. The Routing Rules (The "Brains")
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sshpiper-rules
+  namespace: sshpiper
+data:
+  rules.yaml: |
+    version: "1"
+    rules:
+      # When user 'git' connects, forward to the Forgejo service
+      - username: "git"
+        upstream: "forgejo-ssh.forgejo.svc.cluster.local:22"
+        
+      # When user 'openclaw' connects, forward to the Openclaw service
+      # (Make sure to update 'default' to whatever namespace openclaw lives in)
+      - username: "openclaw"
+        upstream: "openclaw-service.default.svc.cluster.local:22"
+---
+# 2. The SSHPiper Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sshpiper
+  namespace: sshpiper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sshpiper
+  template:
+    metadata:
+      labels:
+        app: sshpiper
+    spec:
+      containers:
+        - name: sshpiper
+          image: ghcr.io/tg123/sshpiperd:latest
+          ports:
+            - containerPort: 2222
+              name: ssh
+          env:
+            # Tell SSHPiper to use the YAML routing plugin
+            - name: SSHPIPERD_PLUGINS
+              value: "yaml"
+            - name: SSHPIPERD_YAML_CONFIG
+              value: "/etc/sshpiper/rules.yaml"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/sshpiper
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: sshpiper-rules
+---
+# 3. Expose it via K3s Built-in LoadBalancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: sshpiper-lb
+  namespace: sshpiper
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 22
+      targetPort: ssh
+      protocol: TCP
+      name: ssh
+  selector:
+    app: sshpiper
