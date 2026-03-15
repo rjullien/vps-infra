@@ -46,9 +46,9 @@ spec:
           #   - name: SSHPIPERD_YAML_CONFIG
           #     value: "/etc/sshpiper/rules.yaml"
           args:
-            - daemon
-            - "--sshpiperd.plugins=yaml"
-            - "--yaml.config=/etc/sshpiper/rules.yaml"
+            - /sshpiperd/plugins/yaml
+            - "--config=/etc/sshpiper/rules.yaml"
+            - "--no-check-perm"
           volumeMounts:
             - name: config-volume
               mountPath: /etc/sshpiper
