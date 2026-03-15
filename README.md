@@ -30,6 +30,8 @@ chown $USER:$USER ~/.kube/config
 
 ### Step 3: Deploy ArgoCD
 
+> **Note:** The `argocd-bootstrap.yaml` file is pre-rendered to keep dependencies off the server. To regenerate it locally after a config change, run: `kustomize build --enable-helm system/argocd/ > argocd-bootstrap.yaml`
+
 ```bash
 kubectl apply --server-side --force-conflicts -f argocd-bootstrap.yaml
 ```
