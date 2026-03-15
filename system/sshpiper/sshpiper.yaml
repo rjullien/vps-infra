@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
         - name: sshpiper
-          image: ghcr.io/tg123/sshpiperd:latest
+          image: ghcr.io/tg123/sshpiperd:full
           ports:
             - containerPort: 2222
               name: ssh
