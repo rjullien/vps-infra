@@ -14,4 +14,4 @@ helmCharts:
 
 resources:
   - couchdb-infisical-secret.yaml
-  - ingress-route.yaml
+  - ingress-tailscale.yaml

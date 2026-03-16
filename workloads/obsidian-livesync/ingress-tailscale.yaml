@@ -1,0 +1,24 @@
+# system/obsidian-livesync/ingress-tailscale.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: couchdb-tailnet
+  namespace: couchdb
+spec:
+  # This is the magic line that tells Tailscale to take over this Ingress
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        # This will be the hostname of the machine on your Tailnet
+        - couchdb
+  rules:
+    - host: couchdb
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: couchdb-couchdb
+                port:
+                  number: 5984
