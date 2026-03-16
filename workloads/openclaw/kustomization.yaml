@@ -3,38 +3,5 @@ kind: Kustomization
 namespace: openclaw
 
 resources:
-  - infisical-secret.yaml
-  - openclaw-pvc.yaml
-  - openclaw-deployment.yaml
-  - openclaw-service.yaml
-
-# Generates a ConfigMap from your local file
-configMapGenerator:
-  - name: litellm-config
-    files:
-      - config.yaml=litellm_config.yaml
-
-# Uses Kustomize's Helm integration
-helmCharts:
-  - name: litellm
-    repo: https://berriai.github.io/litellm-helm
-    releaseName: litellm
-    namespace: openclaw
-    valuesInline:
-      image:
-        repository: ghcr.io/berriai/litellm
-        tag: main-latest
-      master:
-        port: 4000
-        command: ["--config", "/app/config.yaml", "--port", "4000", "--num_workers", "1"]
-        envFrom:
-          - secretRef:
-              name: litellm-secret
-        extraVolumes:
-          - name: config-volume
-            configMap:
-              name: litellm-config
-        extraVolumeMounts:
-          - name: config-volume
-            mountPath: /app/config.yaml
-            subPath: config.yaml
+  - openclaw-app/
+  - litellm
