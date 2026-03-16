@@ -13,3 +13,4 @@ helmCharts:
 resources:
   - traefik-ingress.yaml
   - infisical-secret.yaml
+  - tailscale-ingress.yaml
