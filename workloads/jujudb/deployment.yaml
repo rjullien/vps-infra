@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jujudb
+  namespace: jujudb
+  labels:
+    app: jujudb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jujudb
+  template:
+    metadata:
+      labels:
+        app: jujudb
+    spec:
+      # Si ton registre git.bapttf.com est privé, décommente les lignes suivantes et ajoute le secret
+      # imagePullSecrets:
+      #   - name: regcred 
+      containers:
+        - name: jujudb
+          image: git.bapttf.com/bapttf/jujudb:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: jujudb-config
+            - secretRef:
+                name: jujudb-secrets # Le secret généré par l'opérateur Infisical
+            - secretRef:
+                name: meilisearch-secrets

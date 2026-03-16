@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Kustomize va injecter ce namespace dans TOUS les fichiers listés ci-dessous
+namespace: jujudb
+
+# Kustomize va ajouter ce label à toutes tes ressources (Deployment, Service, etc.)
+commonLabels:
+  app: jujudb
+
+# La liste de tes manifestes
+resources:
+  - infisical-secret.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingressroute.yaml
+
+# On génère le ConfigMap dynamiquement pour avoir le redémarrage automatique des pods
+configMapGenerator:
+  - name: jujudb-config
+    literals:
+      - DB_HOST=postgres-cluster-rw.cnpg-system.svc.cluster.local
+      - DB_PORT=5432
+      - DB_USER=jujudb
+      - DB_NAME=jujudb
+      - MEILI_HOST=http://meilisearch.meilisearch.svc.cluster.local:7700
+      - PORT=8080
+      - LOG_FORMAT=json
+      - TEST_MODE=false
+      - PRODUCTION=true

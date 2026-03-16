@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jujudb
+  namespace: jujdb
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`jujudb.bapttf.com`)
+      kind: Rule
+      services:
+        - name: jujudb
+          port: 8080
+  tls: {}

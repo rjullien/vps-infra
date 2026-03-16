@@ -16,3 +16,10 @@ spec:
         login: true
         passwordSecret:
           name: forgejo-db-secret
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        name: jujudb
+        login: true
+        passwordSecret:
+          name: jujudb-db-secret
