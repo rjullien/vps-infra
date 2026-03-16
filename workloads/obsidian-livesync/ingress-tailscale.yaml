@@ -13,6 +13,6 @@ spec:
         - couchdb
   defaultBackend:
     service:
-      name: couchdb-couchdb
+      name: couchdb-svc-couchdb
       port:
         number: 5984
