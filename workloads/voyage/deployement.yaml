@@ -51,7 +51,7 @@ spec:
                 secretKeyRef:
                   name: voyage-oauth-credentials
                   key: cookie-secret
-          command:
+          args:
             - --provider=github
             - --github-user=rjullien,NicoleJ06,BaptTF,laurine-rol,apej06
             - --email-domain=*
