@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: voyage
+  namespace: voyage
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`voyage.192.168.122.133.nip.io`)
+      kind: Rule
+      services:
+        - name: voyage
+          port: 4180
+  tls: {}
