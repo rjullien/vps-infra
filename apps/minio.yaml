@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: minio-workload
-  namespace: minio
+  namespace: argocd
 spec:
   project: system
   source:
