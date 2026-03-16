@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/BaptTF/openclaw-lea-config.git'
+    repoURL: 'https://github.com/BaptTF/vps-infra.git'
     targetRevision: HEAD
-    path: k8s
+    path: workloads/openclaw
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: openclaw

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openclaw
+  labels:
+    app: openclaw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openclaw
+  strategy:
+    type: Recreate # Required if using ReadWriteOnce PVCs across node changes
+  template:
+    metadata:
+      labels:
+        app: openclaw
+    spec:
+      containers:
+        - name: openclaw
+          image: ghcr.io/bapttf/openclaw-lea-config:latest
+          ports:
+            - containerPort: 22
+              name: ssh
+          envFrom:
+            - secretRef:
+                name: openclaw-secret
+          env:
+            - name: OPENCLAW_SSH_ENABLED
+              value: "true"
+            - name: OPENCLAW_SSH_PORT
+              value: "22"
+            - name: OPENCLAW_CONFIG_PATH
+              value: "/home/node/.openclaw/lea/openclaw.json"
+            # Point to the Litellm service created by the Helm chart
+            - name: LITELLM_URL 
+              value: "http://litellm.openclaw.svc.cluster.local:4000" 
+          volumeMounts:
+            - name: openclaw-data
+              mountPath: /home/node/.openclaw
+            - name: openclaw-ssh
+              mountPath: /home/node/.ssh
+            - name: openclaw-config
+              mountPath: /home/node/.config
+            - name: litellm-config-vol
+              mountPath: /home/node/litellm/config.yaml
+              subPath: config.yaml
+      volumes:
+        - name: openclaw-data
+          persistentVolumeClaim:
+            claimName: openclaw-data-pvc
+        - name: openclaw-ssh
+          persistentVolumeClaim:
+            claimName: openclaw-ssh-pvc
+        - name: openclaw-config
+          persistentVolumeClaim:
+            claimName: openclaw-config-pvc
+        - name: litellm-config-vol
+          configMap:
+            name: litellm-config
