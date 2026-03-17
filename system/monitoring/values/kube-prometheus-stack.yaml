@@ -15,6 +15,15 @@ grafana:
     existingSecret: "grafana-auth"
     userKey: "admin-user"
     passwordKey: "admin-password"
+    
+  ingress:
+    enabled: true
+    ingressClassName: tailscale
+    hosts:
+      - grafana
+    tls:
+      - hosts:
+          - grafana
   
   # Automatically provision data sources for Logs and Traces
   additionalDataSources:
