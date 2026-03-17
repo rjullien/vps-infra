@@ -19,8 +19,6 @@ spec:
       containers:
         - name: openclaw
           image: ghcr.io/bapttf/openclaw-lea-config:latest
-          securityContext:
-            fsGroup: 1000
           resources:
             requests:
               cpu: "100m"
@@ -51,6 +49,8 @@ spec:
               mountPath: /home/node/.ssh
             - name: openclaw-config
               mountPath: /home/node/.config
+      securityContext:
+        fsGroup: 1000
       volumes:
         - name: openclaw-data
           persistentVolumeClaim:
