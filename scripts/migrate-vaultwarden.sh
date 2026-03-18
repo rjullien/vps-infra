@@ -1,1 +1,0 @@
-POD=$(kubectl get pods -n vaultwarden | cut -f1 -d " " | tr '\n' ' ' | cut -f2 -d " ") && kubectl cp ./vw-data/. $POD:/data/ -n vaultwarden
