@@ -9,6 +9,18 @@ GitOps infrastructure on k3s with ArgoCD.
 - Cloudflare account for DNS
 - Tailscale account (for VPN access)
 
+```bash
+# Apply immediately (no reboot needed)
+sudo sysctl fs.inotify.max_user_instances=512
+sudo sysctl fs.inotify.max_user_watches=524288
+
+# Persist across reboots
+cat <<EOF | sudo tee /etc/sysctl.d/99-inotify.conf
+fs.inotify.max_user_instances=512
+fs.inotify.max_user_watches=524288
+EOF
+sudo sysctl -p /etc/sysctl.d/99-inotify.conf
+```
 ---
 
 ## Setup Guide
