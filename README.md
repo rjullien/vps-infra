@@ -38,6 +38,7 @@ curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable=traefik" sh
 mkdir -p ~/.kube
 cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 chown $USER:$USER ~/.kube/config
+kubectl config set-cluster default --server=https://vmi2735515:6443 --tls-server-name=vmi2735515.contaboserver.net
 ```
 
 ### Step 3: Deploy ArgoCD
