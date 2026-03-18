@@ -34,7 +34,7 @@ gitea:
   config:
     server:
       DOMAIN: git.bapttf.com
-      ROOT_URL: "http://git.bapttf.com/"
+      ROOT_URL: "https://git.bapttf.com/"
       SSH_DOMAIN: git.bapttf.com
       SSH_PORT: 22
       SSH_LISTEN_PORT: 22
