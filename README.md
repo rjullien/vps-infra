@@ -45,7 +45,7 @@ chown $USER:$USER ~/.kube/config
 > **Note:** The `argocd-bootstrap.yaml` file is pre-rendered to keep dependencies off the server. To regenerate it locally after a config change, run: `kustomize build --enable-helm system/argocd/ > argocd-bootstrap.yaml`
 
 ```bash
-kubectl apply --server-side --force-conflicts -f argocd-bootstrap.yaml
+kubectl apply --server-side --force-conflicts -f https://raw.githubusercontent.com/BaptTF/vps-infra/refs/heads/main/argocd-bootstrap.yaml
 ```
 
 ### Step 4: Deploy the GitOps apps
