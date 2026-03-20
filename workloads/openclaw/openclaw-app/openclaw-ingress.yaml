@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: HostSNI(`openclaw.bapttf.com`)
+    - match: HostSNI(`ssh.bapttf.com`)
       services:
         - name: openclaw-ssh
           port: 22
