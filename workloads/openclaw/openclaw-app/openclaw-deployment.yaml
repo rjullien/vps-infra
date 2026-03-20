@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: openclaw
-          image: ghcr.io/bapttf/openclaw-lea-config:latest
+          image: ghcr.io/bapttf/openclaw-lea-config:sha-3693ebf74f97cee3fce5b92ae80c03f059b14a05
           resources:
             requests:
               cpu: "100m"
