@@ -21,11 +21,11 @@ spec:
           image: ghcr.io/bapttf/openclaw-lea-config:sha-3693ebf74f97cee3fce5b92ae80c03f059b14a05
           resources:
             requests:
-              cpu: "100m"
-              memory: "256Mi"
+              cpu: "50m"
+              memory: "512Mi"
             limits:
               cpu: "2000m"         
-              memory: "2.5Gi"
+              memory: "2Gi"
           ports:
             - containerPort: 22
               name: ssh
