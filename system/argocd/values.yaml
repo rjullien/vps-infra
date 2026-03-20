@@ -21,3 +21,5 @@ configs:
     kustomize.buildOptions: --enable-helm
   params:
       server.insecure: true
+  secret:
+     githubSecret: "$argocd-webhook-secret:webhook-token"
