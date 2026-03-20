@@ -42,26 +42,11 @@ spec:
             - name: NODE_OPTIONS
               value: "--max-old-space-size=1280 --max-semi-space-size=16"
           volumeMounts:
-            - name: openclaw-data
-              mountPath: /home/node/.openclaw
-            - name: openclaw-ssh
-              mountPath: /home/node/.ssh
-            - name: openclaw-config
-              mountPath: /home/node/.config
             - name: openclaw-home
-              mountPath: /mnt/home
+              mountPath: /home
       securityContext:
         fsGroup: 1000
       volumes:
-        - name: openclaw-data
-          persistentVolumeClaim:
-            claimName: openclaw-data-pvc
-        - name: openclaw-ssh
-          persistentVolumeClaim:
-            claimName: openclaw-ssh-pvc
-        - name: openclaw-config
-          persistentVolumeClaim:
-            claimName: openclaw-config-pvc
         - name: openclaw-home
           persistentVolumeClaim:
             claimName: openclaw-home-pvc
