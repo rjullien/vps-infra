@@ -3,11 +3,10 @@ kind: Service
 metadata:
   name: openclaw-ssh
 spec:
-  type: LoadBalancer
   selector:
     app: openclaw
   ports:
     - protocol: TCP
-      port: 22222
+      port: 22
       targetPort: 22
       name: ssh
