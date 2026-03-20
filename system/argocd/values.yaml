@@ -9,17 +9,20 @@ redis:
 
 # S'assurer que les composants annexes standards sont activés
 dex:
-  enabled: true
+  enabled: false
 applicationSet:
   enabled: true
 notifications:
   enabled: true
- 
+
 configs:
   cm:
     # This keeps your Kustomize Helm support enabled for OTHER apps
     kustomize.buildOptions: --enable-helm
+    timeout.reconciliation: "600s"
   params:
-      server.insecure: true
+    server.insecure: true
+    reposerver.git.shallow.clone: "true"
+    reposerver.parallelism.limit: "5"
   secret:
-     githubSecret: "$argocd-webhook-secret:webhook-token"
+    githubSecret: "$argocd-webhook-secret:webhook-token"
