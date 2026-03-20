@@ -5,6 +5,7 @@ resources:
   - infisical-secret.yaml
   - bifrost-deployment.yaml
   - bifrost-service.yaml
+  - bifrost-ingress.yaml
 
 configMapGenerator:
   - name: bifrost-config

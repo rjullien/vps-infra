@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bifrost
+  labels:
+    app: bifrost
+spec:
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - bifrost 
+  defaultBackend:
+    service:
+      name: bifrost
+      port:
+        number: 8080
