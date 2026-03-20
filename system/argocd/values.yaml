@@ -24,6 +24,8 @@ configs:
     server.insecure: true
     reposerver.git.shallow.clone: "true"
     reposerver.parallelism.limit: "5"
+    server.repo.server.timeout.seconds: "300"
+    controller.repo.server.timeout.seconds: "300"
   secret:
     githubSecret: "$argocd-webhook-secret:webhook-token"
 
