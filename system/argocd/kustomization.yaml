@@ -18,3 +18,4 @@ resources:
   - ingress.yaml
   - tailscale-ingress.yaml
   - namespace.yaml
+  - infisical-secret.yaml
