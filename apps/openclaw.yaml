@@ -18,3 +18,10 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+  ignoreDifferences:
+    - group: ""
+      kind: Service
+      name: nas-proxy
+      namespace: openclaw
+      jsonPointers:
+      - /spec/externalName
