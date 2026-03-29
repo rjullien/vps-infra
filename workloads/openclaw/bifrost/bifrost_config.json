@@ -44,6 +44,33 @@
         "retry_backoff_initial_ms": 1000,
         "retry_backoff_max_ms": 30000
       }
+    },
+    "xai": {
+      "keys": [
+        {
+          "name": "xai-api-key",
+          "value": "env.XAI_API_KEY",
+          "models": [
+            "grok-4-1-fast-non-reasoning",
+            "grok-4-1-fast-reasoning"
+          ],
+          "weight": 1.0
+        }
+      ],
+      "network_config": {
+        "base_url": "https://api.x.ai",
+        "default_request_timeout_in_seconds": 300,
+        "max_retries": 3,
+        "retry_backoff_initial_ms": 1000,
+        "retry_backoff_max_ms": 30000
+      },
+      "custom_provider_config": {
+        "base_provider_type": "openai",
+        "allowed_requests": {
+          "chat_completion": true,
+          "chat_completion_stream": true
+        }
+      }
     }
   }
 }
