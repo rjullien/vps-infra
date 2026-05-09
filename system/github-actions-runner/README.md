@@ -1,14 +1,15 @@
 # GitHub Actions Runner Controller (ARC)
 
-Self-hosted GitHub Actions runners on Kubernetes for `rjullien` repos.
+Self-hosted runners on k3s for `rjullien/ce-analytics-dashboard`.
 
 ## Architecture
 
-- **Controller** (`arc-systems` namespace): Watches for `AutoscalingRunnerSet` CRDs and manages runner pod lifecycle
-- **Runner Scale Set** (`arc-runners` namespace): Ephemeral runners that scale 0→3 on demand
-- **DinD**: Docker-in-Docker enabled for full `docker build`/`docker compose` support
+3 ArgoCD Applications:
+1. **github-actions-runner-base** — namespaces + Infisical secret sync
+2. **arc-controller** — ARC controller (Helm OCI chart, `arc-systems` namespace)
+3. **arc-runner-set** — Runner scale set (Helm OCI chart, `arc-runners` namespace)
 
-## Usage in workflows
+## Usage
 
 ```yaml
 jobs:
@@ -16,52 +17,17 @@ jobs:
     runs-on: arc-runner-set
     steps:
       - uses: actions/checkout@v4
-      - run: echo "Running on self-hosted runner!"
+      - run: docker build .
 ```
 
-## Setup requirements
+## Setup
 
-### 1. Runner scope
+1. Store PAT in Infisical: project `infrastructure`, env `prod`, path `/github-actions-runner`, key `github_token`
+2. Merge PR — ArgoCD auto-syncs
 
-Currently configured for **repository-level** on `rjullien/ce-analytics-dashboard`.
+## Specs
 
-To add more repos, deploy additional runner scale sets (duplicate the helm chart entry with a different `releaseName` and `githubConfigUrl`).
-
-| Scope | `githubConfigUrl` | PAT scope |
-|-------|-------------------|----------|
-| Repository | `https://github.com/rjullien/ce-analytics-dashboard` | `repo` |
-
-### 2. Infisical secret
-
-Create a secret at path `/github-actions-runner` in the `infrastructure` project (prod env):
-
-| Key | Value |
-|-----|-------|
-| `github_token` | GitHub PAT (classic) with appropriate scope |
-
-### 3. Deploy
-
-ArgoCD will auto-sync once merged. The controller starts first, then the runner scale set registers with GitHub.
-
-## Files
-
-| File | Purpose |
-|------|---------|
-| `kustomization.yaml` | Main — references both Helm charts (OCI) |
-| `namespace.yaml` | `arc-systems` + `arc-runners` namespaces |
-| `infisical-secret.yaml` | Secret sync: Infisical → K8s |
-| `values-controller.yaml` | ARC controller Helm values |
-| `values-runner-set.yaml` | Runner scale set Helm values |
-
-## Scaling
-
-- `minRunners: 0` — No idle runners (saves resources)
-- `maxRunners: 3` — Up to 3 concurrent jobs
-- Runners are ephemeral (destroyed after each job)
-- Scale-up time: ~30s (pod scheduling + image pull)
-
-## Version
-
-- ARC: **v0.14.1** (April 2026)
-- Runner image: `ghcr.io/actions/actions-runner:latest`
-- [Releases](https://github.com/actions/actions-runner-controller/releases)
+- ARC v0.14.1
+- DinD enabled (docker build support)
+- Scale 0→3 (no idle runners)
+- Runner limits: 2 CPU / 2Gi RAM

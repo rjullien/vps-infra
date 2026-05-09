@@ -1,0 +1,44 @@
+# ARC Runner Scale Set - ephemeral runners for ce-analytics-dashboard
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: arc-runner-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: 'ghcr.io/actions/actions-runner-controller-charts'
+    chart: gha-runner-scale-set
+    targetRevision: 0.14.1
+    helm:
+      valuesObject:
+        githubConfigUrl: "https://github.com/rjullien/ce-analytics-dashboard"
+        githubConfigSecret: github-runner-pat
+        maxRunners: 3
+        minRunners: 0
+        containerMode:
+          type: "dind"
+        template:
+          spec:
+            containers:
+              - name: runner
+                image: ghcr.io/actions/actions-runner:latest
+                resources:
+                  requests:
+                    cpu: 250m
+                    memory: 512Mi
+                  limits:
+                    cpu: "2"
+                    memory: 2Gi
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: arc-runners
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

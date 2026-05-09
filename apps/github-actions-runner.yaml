@@ -1,10 +1,12 @@
+# Base resources (namespaces + infisical secret)
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: github-actions-runner
+  name: github-actions-runner-base
   namespace: argocd
   annotations:
     argocd.argoproj.io/manifest-generate-paths: .
+    argocd.argoproj.io/sync-wave: "-2"
 spec:
   project: default
   source:
