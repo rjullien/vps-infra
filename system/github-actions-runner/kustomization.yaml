@@ -1,8 +1,11 @@
-# Base resources for ARC (namespaces + secrets)
-# The Helm charts are deployed via separate ArgoCD Applications
+# GitHub Actions Runner - Kustomize manifests
+# Controller is deployed via ArgoCD Helm source (apps/arc-controller.yaml)
+# Runner set is a pure YAML AutoscalingRunnerSet CRD
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: arc-runners
 
 resources:
   - namespace.yaml
   - infisical-secret.yaml
+  - runner-set.yaml

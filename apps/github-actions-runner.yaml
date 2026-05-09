@@ -1,12 +1,12 @@
-# Base resources (namespaces + infisical secret)
+# GitHub Actions Runner - base resources + AutoscalingRunnerSet
+# Pure Kustomize (no Helm)
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: github-actions-runner-base
+  name: github-actions-runner
   namespace: argocd
   annotations:
     argocd.argoproj.io/manifest-generate-paths: .
-    argocd.argoproj.io/sync-wave: "-2"
 spec:
   project: default
   source:
@@ -15,7 +15,7 @@ spec:
     path: system/github-actions-runner
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: arc-systems
+    namespace: arc-runners
   syncPolicy:
     automated:
       prune: true
