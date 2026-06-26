@@ -15,4 +15,8 @@ spec:
       port: 18800
       targetPort: 18800
       name: a2a
+    - protocol: TCP
+      port: 19000
+      targetPort: 18789
+      name: gateway
    
