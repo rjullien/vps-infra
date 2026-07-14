@@ -1,9 +1,24 @@
 model:
   provider: custom
-  default: bedrock/us.anthropic.claude-opus-4-6-v1
+  default: opencode-go/deepseek-v4-pro
   base_url: http://bifrost.openclaw.svc.cluster.local:8080/v1
   api_key: "dummy"
   api_mode: chat_completions
+
+delegation:
+  provider: custom
+  model: opencode-go/glm-5.2, opencode-go/kimi-k2.6
+  base_url: http://bifrost.openclaw.svc.cluster.local:8080/v1
+  api_key: "dummy"
+  api_mode: chat_completions
+
+auxiliary:
+  vision:
+    provider: custom
+    model: opencode-go/kimi-k2.6
+    base_url: http://bifrost.openclaw.svc.cluster.local:8080/v1
+    api_key: "dummy"
+    api_mode: chat_completions
 
 approvals:
   mode: off
