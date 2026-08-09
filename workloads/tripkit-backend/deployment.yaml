@@ -53,6 +53,18 @@ spec:
                 secretKeyRef:
                   name: tripkit-secrets
                   key: api-token
+            # optional until Infisical key github-token exists — allows testing
+            # publish error path (TRIPKIT_GITHUB_TOKEN not configured / empty).
+            - name: TRIPKIT_GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: tripkit-secrets
+                  key: github-token
+                  optional: true
+            - name: TRIPKIT_PUBLISH_WORKER
+              value: "1"
+            - name: TRIPKIT_PUBLISH_SOURCES
+              value: '[{"id":"jullien","repo":"rjullien/tripkit-seeds","ref":"main","expectedFamily":"jullien","publisherLogins":["rene","nicole"],"ownerLogins":["rene","nicole"],"enabled":true,"seeds":[{"tripId":"quebec-2026","path":"quebec-2026.js","assets":["quebec-map.html","quebec-meteo.html"]}]}]'
           resources:
             requests:
               memory: 32Mi
