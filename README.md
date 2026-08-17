@@ -302,9 +302,9 @@ When the original worker came back `Ready`:
 
 ## OpenClaw cron jobs are not GitOps
 
-Hermes / NullClaw `openclaw cron add` jobs live in the agent **PVC** (`nullclaw-leo-data`), not in this repo. Committed `config.yaml` / `config.json` have no job list. Hermes init **overwrites** `/opt/data/config.yaml` from the ConfigMap on every pod start, so a PVC-only cron disappears on restart and Argo does **not** recreate it.
+The morning WhatsApp daily brief is a **tripkit-backend** in-process worker, not an OpenClaw cron. It is **off** (`TRIPKIT_DAILY_BRIEF_WORKER=0`). Do not set it to `1`.
 
-The morning WhatsApp daily brief is **not** an OpenClaw cron and **not** a Kubernetes `CronJob`. It is tripkit-backend’s in-process ticker. Do not add `openclaw cron add` / `/travel:daily-brief` / a `CronJob` to bring it back.
+Hermes init **overwrites** `/opt/data/config.yaml` from the ConfigMap on every pod start. Agent cron jobs are PVC state, not GitOps.
 
 Regression check (must stay green):
 

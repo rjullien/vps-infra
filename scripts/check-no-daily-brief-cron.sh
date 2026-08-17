@@ -63,4 +63,15 @@ for f in "${CONFIGS[@]}"; do
 done
 ok "hermes/nullclaw configs do not mention daily-brief"
 
+# 5. Backend auto-send must stay off in GitOps (in-process worker, not a CronJob).
+DEPLOY="$ROOT/workloads/tripkit-backend/deployment.yaml"
+[[ -f "$DEPLOY" ]] || fail "missing $DEPLOY"
+if grep -A1 'name: TRIPKIT_DAILY_BRIEF_WORKER' "$DEPLOY" | grep -q 'value: "1"'; then
+  fail "TRIPKIT_DAILY_BRIEF_WORKER=1 would restart the morning WhatsApp auto-send"
+fi
+if ! grep -A1 'name: TRIPKIT_DAILY_BRIEF_WORKER' "$DEPLOY" | grep -q 'value: "0"'; then
+  fail "tripkit-backend must pin TRIPKIT_DAILY_BRIEF_WORKER=0"
+fi
+ok "tripkit-backend auto worker pinned off"
+
 echo "all checks passed"
