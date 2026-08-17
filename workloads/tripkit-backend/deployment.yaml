@@ -69,8 +69,6 @@ spec:
                   optional: true
             - name: TRIPKIT_LEO_DASHBOARD_URL
               value: "https://hermes-leo.bapttf.com"
-            - name: TRIPKIT_DAILY_BRIEF_WORKER
-              value: "0"
           resources:
             requests:
               memory: 32Mi

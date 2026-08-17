@@ -302,7 +302,7 @@ When the original worker came back `Ready`:
 
 ## OpenClaw cron jobs are not GitOps
 
-The morning WhatsApp daily brief is a **tripkit-backend** in-process worker, not an OpenClaw cron. It is **off** (`TRIPKIT_DAILY_BRIEF_WORKER=0`). Do not set it to `1`.
+The morning WhatsApp daily brief is a **tripkit-backend** in-process worker, not an OpenClaw cron. Default **on**. Do not pin `TRIPKIT_DAILY_BRIEF_WORKER=0`.
 
 Hermes init **overwrites** `/opt/data/config.yaml` from the ConfigMap on every pod start. Agent cron jobs are PVC state, not GitOps.
 
