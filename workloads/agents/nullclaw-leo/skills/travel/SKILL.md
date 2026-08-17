@@ -15,7 +15,7 @@ Quand l'utilisateur invoque `/travel` ou `/travel:xxx`, exécuter l'action corre
 **Toujours** répondre avec un menu à boutons inline Telegram + résumé rapide :
 
 ```
-message action=send channel=telegram target=974020023 message="🗺️ **Travel — USA 2026**\nJ-XX avant le départ !\n\nChoisis une commande :" buttons=[[{"callback_data":"/travel:hotels","text":"🏨 Hotels"},{"callback_data":"/travel:route","text":"🛣️ Route"}],[{"callback_data":"/travel:restaurants","text":"🍽️ Restaurants"},{"callback_data":"/travel:bookings","text":"📋 Bookings"}],[{"callback_data":"/travel:calendar","text":"📅 Calendar"},{"callback_data":"/travel:brief","text":"📝 Brief"}],[{"callback_data":"/travel:daily-brief","text":"📋 Brief Daily"},{"callback_data":"/travel:teaser","text":"🎯 Teaser"}],[{"callback_data":"/travel:admin","text":"🛂 Admin"},{"callback_data":"/travel:validate","text":"✅ Validate"}],[{"callback_data":"/travel:help","text":"❓ Help"}]]
+message action=send channel=telegram target=974020023 message="🗺️ **Travel — USA 2026**\nJ-XX avant le départ !\n\nChoisis une commande :" buttons=[[{"callback_data":"/travel:hotels","text":"🏨 Hotels"},{"callback_data":"/travel:route","text":"🛣️ Route"}],[{"callback_data":"/travel:restaurants","text":"🍽️ Restaurants"},{"callback_data":"/travel:bookings","text":"📋 Bookings"}],[{"callback_data":"/travel:calendar","text":"📅 Calendar"},{"callback_data":"/travel:brief","text":"📝 Brief"}],[{"callback_data":"/travel:teaser","text":"🎯 Teaser"}],[{"callback_data":"/travel:admin","text":"🛂 Admin"},{"callback_data":"/travel:validate","text":"✅ Validate"}],[{"callback_data":"/travel:help","text":"❓ Help"}]]
 ```
 
 Calculer J-XX depuis la date du jour jusqu'au 17 avril 2026. Puis répondre NO_REPLY (le message tool envoie déjà la réponse).
@@ -31,7 +31,7 @@ Calculer J-XX depuis la date du jour jusqu'au 17 avril 2026. Puis répondre NO_R
 | `/travel:teaser` | Générer un teaser WhatsApp → lire [references/teaser-guide.md](references/teaser-guide.md) |
 | `/travel:calendar` | Sync Google Calendar ↔ bookings — vérifier cohérence |
 | `/travel:brief` | Afficher `trip-brief.md` — vue d'ensemble complète |
-| `/travel:daily-brief` | Générer le brief quotidien d'un jour → skill `bmad-travel/skills/daily-brief.md` |
+| `/travel:daily-brief` | **RETIRED (DAILY_BRIEF_CRON_FORBIDDEN)** — no-op. Ne pas générer, ne pas envoyer WhatsApp, ne pas `openclaw cron add`. L'envoi matin = tripkit-backend. |
 | `/travel:nuisance` | Analyse nuisances pour un hébergement → lire [references/nuisance-check.md](references/nuisance-check.md) |
 | `/travel:validate` | Validation complète : croiser hotels.md, bookings/, calendar, route-plan |
 | `/travel:admin` | Check formalités admin par pays → lire [references/admin-check.md](references/admin-check.md) |
@@ -56,7 +56,7 @@ Envoyer ce message :
 
 📝 **Brief** — Vue d'ensemble du voyage : voyageurs, phases, dates, contraintes, budget global. Source : trip-brief.md
 
-📋 **Brief Daily** — Génère le brief quotidien d'un jour (full + minimal + WhatsApp). Révèle les teasers mystères ! Usage : `/travel:daily-brief 3` ou `/travel:daily-brief demain`
+📋 **Brief Daily** — **RETIRED.** `/travel:daily-brief` est un no-op (`DAILY_BRIEF_CRON_FORBIDDEN`). Ne pas envoyer WhatsApp. L'envoi matin du groupe = tripkit-backend.
 
 🎯 **Teaser** — Génère et envoie un teaser mystère au groupe WhatsApp USA-Vegas 2026. Max 1/semaine, sans spoiler !
 
@@ -87,6 +87,7 @@ Envoyer ce message :
 
 ## Règles
 
+- **Daily Brief WhatsApp :** interdit via Léo (`DAILY_BRIEF_CRON_FORBIDDEN`). Pas de `openclaw cron add` pour daily-brief. Si `/travel:daily-brief` est invoqué → no-op, ne pas envoyer.
 - **Vérifier distances** avec recherche web (les LLMs inventent !)
 - **Budget** : max 200€/nuit groupe, 65€/pers resto
 - **Pas de chaînes** : Éviter Applebee's, Olive Garden, etc.
