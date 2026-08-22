@@ -17,6 +17,8 @@ spec:
     metadata:
       labels:
         app: assisted-teacher-backend
+      annotations:
+        force-restart: "2026-08-22-2320"
     spec:
       containers:
         - name: backend
