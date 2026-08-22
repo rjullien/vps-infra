@@ -31,7 +31,7 @@ spec:
             - name: WORKSPACE_DIR
               value: "/workspace"
             - name: ACP_AGENT_CMD
-              value: ""
+              value: "hermes acp"
           envFrom:
             - secretRef:
                 name: hermes-lya-secret-bifrost
