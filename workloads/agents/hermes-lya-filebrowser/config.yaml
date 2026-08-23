@@ -6,6 +6,9 @@ server:
     - path: /srv/data
       config:
         defaultEnabled: true
+        defaultUserScope: "/"
+        rules:
+          - ignoreHidden: false
 auth:
   adminUsername: baptiste
   methods:
@@ -18,6 +21,7 @@ auth:
 userDefaults:
   account:
     loginMethod: proxy
+    scope: "/"
     permissions:
       admin: false
       modify: true
@@ -26,7 +30,7 @@ userDefaults:
       create: true
       delete: true
       api: false
-      realtime: false
+      realtime: true
 http:
   trustedHeaders:
     - X-Forwarded-For
