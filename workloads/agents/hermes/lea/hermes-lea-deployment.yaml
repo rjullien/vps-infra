@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hermes-leo
+  name: hermes-lea
   namespace: openclaw
   labels:
-    app: hermes-leo
+    app: hermes-lea
   annotations:
     secrets.infisical.com/auto-reload: "true"
 spec:
@@ -17,47 +17,17 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      app: hermes-leo
+      app: hermes-lea
   template:
     metadata:
       labels:
-        app: hermes-leo
+        app: hermes-lea
     spec:
-      serviceAccountName: hermes-leo
+      serviceAccountName: hermes-lea
       initContainers:
         - name: init-config
           image: alpine/git:2.54.0
-          command: ["/bin/sh", "-c"]
-          args:
-            - |
-              set -e
-              cp /config-template/config.yaml /opt/data/config.yaml
-              mkdir -p /tmp/ssh /opt/data/skills
-              cp /deploy-key/id_ed25519 /tmp/ssh/id_ed25519
-              chmod 600 /tmp/ssh/id_ed25519
-              printf '%s\n' 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' > /tmp/ssh/known_hosts
-              export GIT_SSH_COMMAND="ssh -i /tmp/ssh/id_ed25519 -o UserKnownHostsFile=/tmp/ssh/known_hosts -o IdentitiesOnly=yes"
-              git config --global --add safe.directory /opt/data/skills
-              cd /opt/data/skills
-              if [ ! -d .git ]; then
-                if [ -z "$(find . -mindepth 1 -maxdepth 1 -print -quit)" ]; then
-                  git clone --depth 1 --branch main git@github.com:BaptTF/agents-skills.git .
-                else
-                  git init -b main
-                  git remote add origin git@github.com:BaptTF/agents-skills.git
-                  git fetch --depth 1 origin main
-                  git reset --mixed FETCH_HEAD
-                fi
-                chown -R 10000:10000 /opt/data/skills
-              else
-                git fetch --depth 1 origin main
-                if [ "$(git rev-parse HEAD)" != "$(git rev-parse FETCH_HEAD)" ]; then
-                  if git merge --ff-only FETCH_HEAD; then
-                    chown -R 10000:10000 /opt/data/skills
-                  fi
-                fi
-              fi
-              chown 10000:10000 /opt/data/config.yaml
+          command: ["/bin/sh", "/scripts/init-skills.sh"]
           volumeMounts:
             - name: config-template
               mountPath: /config-template
@@ -65,20 +35,20 @@ spec:
             - name: skills-deploy-key
               mountPath: /deploy-key
               readOnly: true
+            - name: init-skills
+              mountPath: /scripts
+              readOnly: true
             - name: data
               mountPath: /opt/data
       containers:
-        - name: hermes-leo
-          image: ghcr.io/rjullien/hermes-leo-config/hermes-leo-custom:v2026.8.31
+        - name: hermes-lea
+          image: ghcr.io/rjullien/hermes-leo-config/hermes-leo-custom:v2026.9.18
           args: ["gateway", "run"]
-          envFrom:
-            - secretRef:
-                name: nullclaw-leo-secret
           env:
             - name: TELEGRAM_BOT_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: nullclaw-leo-secret-init
+                  name: hermes-lea-secret
                   key: TELEGRAM_BOT_TOKEN
             - name: TELEGRAM_ALLOWED_USERS
               value: "974020023,8726326688,1156623391,8761164341,8348834293,8701879507,8920294477"
@@ -97,20 +67,14 @@ spec:
             - name: HERMES_DASHBOARD_OIDC_ISSUER
               value: "https://auth.bapttf.com"
             - name: HERMES_DASHBOARD_OIDC_CLIENT_ID
-              value: "hermes-leo-dashboard"
+              value: "hermes-lea-dashboard"
             - name: HERMES_DASHBOARD_PUBLIC_URL
-              value: "https://hermes-leo.bapttf.com"
+              value: "https://hermes-lea.bapttf.com"
             - name: API_SERVER_KEY
               valueFrom:
                 secretKeyRef:
-                  name: nullclaw-leo-secret
+                  name: hermes-lea-secret
                   key: API_SERVER_KEY
-            - name: NULLCLAW_WHATSMEOW_BRIDGE_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: nullclaw-leo-secret-bridge
-                  key: WHATSMEOW_BRIDGE_TOKEN
-                  optional: true
             - name: PATH
               value: "/opt/data/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
             - name: CAMOFOX_URL
@@ -162,14 +126,18 @@ spec:
       volumes:
         - name: config-template
           configMap:
-            name: hermes-leo-config
+            name: hermes-lea-config
         - name: skills-deploy-key
           secret:
             secretName: agents-skills-deploy-key
+            defaultMode: 0400
+        - name: init-skills
+          configMap:
+            name: hermes-init-skills
         - name: data
           persistentVolumeClaim:
-            claimName: nullclaw-leo-data
+            claimName: hermes-lea-data
         - name: devin-credentials
           secret:
-            secretName: nullclaw-leo-secret-devin
+            secretName: hermes-lea-secret-devin
             optional: true
